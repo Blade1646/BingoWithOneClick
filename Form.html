@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f9;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        width: 100vw;
+        margin: 0;
+      }
+
+      .upload-text {
+        font-weight: bold;
+      }
+
+      .container {
+        background-color: white;
+        padding: 20px;
+        border-radius: 8px;
+        text-align: center;
+      }
+
+      .file-upload-container {
+        margin: 20px 0;
+      }
+
+      .file-upload {
+        background-color: #f9f9f9;
+        padding: 20px;
+        border: 2px dashed #0078d4;
+        border-radius: 8px;
+        cursor: pointer;
+        position: relative;
+      }
+
+      .file-upload:hover {
+        background-color: #e0f7ff;
+      }
+
+      .file-upload input {
+        display: none;
+      }
+
+      .file-upload p {
+        color: #333;
+        margin: 10px 0;
+      }
+
+      .file-upload span {
+        font-weight: bold;
+        color: #0078d4;
+        cursor: pointer;
+      }
+
+      .file-upload span:hover {
+        text-decoration: underline;
+      }
+
+      #file-name {
+        font-size: 14px;
+        color: #333;
+        margin-top: 10px;
+        display: none;
+      }
+
+      #upload-btn {
+        font-size: 14px;
+        background-color: #0078d4;
+        color: white;
+        padding: 10px 0;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        width: 100%;
+        display: none;
+      }
+
+      #upload-btn:hover {
+        background-color: #005b99;
+      }
+
+      #progress-container {
+        display: none;
+      }
+
+      #progress-container p {
+        margin: 10px 0;
+      }
+
+      #progress-bar {
+        background-color: #0078d4;
+        width: 0%;
+        height: 20px;
+        border-radius: 8px;
+      }
+
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <div id="upload-container">
+        <p class="upload-text">Upload Ecwid .csv file</p>
+        <div class = "file-upload-container">
+          <div class="file-upload" id="file-drop-area">
+            <p>Drag and drop full orders file here</p>
+            <p>or</p>
+            <input type="file" id="csvFile" accept=".csv" onchange="handleFileSelect(event)">
+            <p><span onclick="document.getElementById('csvFile').click()">Select a file</span></p>
+          </div>
+          <div id="file-name"></div>
+        </div>
+
+        <button id="upload-btn" onclick="uploadFile()">Process</button>
+      </div>
+      <div id="progress-container">
+        <p>Processing...</p>
+        <div id="progress-bar"></div>
+      </div>
+    </div>
+
+    <script>
+      var csvData = null;
+      var dataType = "<?= dataType ?>"
+      var importType = "<?= importType ?>"
+
+      const dropArea = document.getElementById('file-drop-area');
+
+      dropArea.addEventListener('dragover', function (e) {
+        e.preventDefault();
+        dropArea.style.backgroundColor = '#e0f7ff';
+      });
+
+      dropArea.addEventListener('dragleave', function (e) {
+        e.preventDefault();
+        dropArea.style.backgroundColor = '#f9f9f9';
+      });
+
+      dropArea.addEventListener('drop', function (e) {
+        e.preventDefault();
+        dropArea.style.backgroundColor = '#f9f9f9';
+        handleFileSelect({ target: { files: e.dataTransfer.files } });
+      });
+
+      if (importType == "API") {
+        document.getElementById('upload-container').style.display = 'none';
+        document.getElementById('progress-container').style.width = '280px';
+        fetchData();
+      }
+
+      function handleFileSelect(event) {
+        const file = event.target.files[0];
+
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+              csvData = e.target.result;
+              document.getElementById('file-name').textContent = `Selected file: ${file.name}`;
+              document.getElementById('file-name').style.display = 'block';
+              document.getElementById('upload-btn').style.display = 'block';
+            };
+            reader.readAsText(file);
+        }
+      }
+
+      function uploadFile() {
+        if (csvData) {
+          showProgress(true);
+          google.script.run.withSuccessHandler(function() { // #todo also catch errors
+            showProgress(false);
+            google.script.run.alertDataImportSuccess(dataType);
+            google.script.host.close();
+          }).processData(csvData, dataType);
+        }
+      }
+
+      function fetchData() {
+        showProgress(true);
+        google.script.run.withSuccessHandler(function() {
+          showProgress(false);
+          google.script.run.alertDataImportSuccess(dataType);
+          google.script.host.close();
+        }).getAndProcessData(dataType);
+      }
+
+      function showProgress(show) {
+        const uploadButton = document.getElementById('upload-btn');
+        const progressContainer = document.getElementById('progress-container');
+        const progressBar = document.getElementById('progress-bar');
+
+        if (show) {
+          uploadButton.style.display = 'none';
+          progressContainer.style.display = 'block';
+          var width = 0;
+          const interval = setInterval(() => {
+            if (width >= 100) {
+              clearInterval(interval);
+            } else {
+              width += dataType == "Bingo Data" ? 5 : dataType == "Lotto Data" ? 10 : 0;
+              progressBar.style.width = width + '%';
+            }
+          }, 250);
+        } else {
+          progressContainer.style.display = 'none';
+        }
+      }
+    </script>
+  </body>
+</html>
