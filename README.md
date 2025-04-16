@@ -59,4 +59,4 @@ However, if you wish to adapt the script for use with your own Ecwid store, you 
 - `storeID` – your Ecwid store ID
 - `secretToken` – your Ecwid API token
 
-    These can be set using the built-in utility function `setDocumentProperty(key, value)` (from `Utilities.gs`). This function can be executed through the Apps Script console or by adding your own interface. Usage and adaptation outside of the original environment is at your own discretion.
+These can be set using the built-in utility function `setDocumentProperty(key, value)` (from `Utilities.gs`). This function can be executed through the Apps Script console or by adding your own interface. Usage and adaptation outside of the original environment is at your own discretion.
