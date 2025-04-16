@@ -25,11 +25,15 @@ This Google Apps Script project enhances Google Sheets with a custom UI for impo
     - Log in to your Ecwid account and go to the Orders page.
     - Select all orders (the script will filter only the relevant ones later). 
     - Export as a `.csv` file using default options (all columns included, semicolon as delimiter).
+
         ![Export orders configuration](images/export-orders-config.png)
+
     - In the sheet, go to `Import > Bingo Data > From file` or `Import > Lotto Data > From file`, and upload the file via selection or drag-and-drop.
+
         ![Import orders button](images/import-orders-button.png)
 
 - To import data automatically via API, go to `Import > Bingo Data > From API` or `Import > Lotto Data > From API`. The script tracks the last imported order and only adds new entries.
+
     ![Auto-import orders bar](images/auto-import-orders-bar.png)
 
 3. Imported data will appear in either the Bingo Data or Lotto Data sheet.
