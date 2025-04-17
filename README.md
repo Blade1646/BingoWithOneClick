@@ -36,13 +36,17 @@ This Google Apps Script project enhances Google Sheets with a custom UI for impo
 
     ![Auto-import orders bar](images/auto-import-orders-bar.png)
 
-3. Imported data will appear in either the Bingo Data or Lotto Data sheet.
+3. Imported data will appear in either the Bingo Data or Lotto Data sheet. After import, a confirmation message will appear summarizing the number of new entries and the categorized order details.
+
+     ![Alert message](images/alert-message.png)
 
 4. Bingo data is split into two parts: one for direct copy-paste into the master file (books), and one for handling online voucher distribution.
 
 5. A Bingo List sheet is generated automatically from the Bingo data. Each Bingo book becomes a separate row.
 
-6. Comments are used to extract names and surnames. If parsing fails, the row is marked in red italics for manual review.
+     ![Bingo list](images/bingo-list.png)
+
+6. Comments are used to extract names and surnames. If parsing fails, the row is marked in red italics for manual review. When editing a name or surname in a row, all rows from the same order will be updated as well.
 
 7. Email addresses are validated. Any address with an unknown domain or incorrect format is highlighted in yellow.
 
